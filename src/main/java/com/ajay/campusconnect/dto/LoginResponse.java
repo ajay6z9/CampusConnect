@@ -8,9 +8,14 @@ import lombok.Data;
 public class LoginResponse {
 
     private Long id;
+
     private String name;
+
     private String email;
 
-    // JWT will be added later
+    private String token;
+
     private String message;
+
+
 }

@@ -5,6 +5,7 @@ import com.ajay.campusconnect.dto.LoginResponse;
 import com.ajay.campusconnect.entity.User;
 import com.ajay.campusconnect.exception.InvalidCredentialsException;
 import com.ajay.campusconnect.repository.UserRepository;
+import com.ajay.campusconnect.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       JwtService jwtService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -39,6 +43,7 @@ public class AuthService {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .token(jwtService.generateToken(user.getEmail()))
                 .message("Login successful")
                 .build();
     }

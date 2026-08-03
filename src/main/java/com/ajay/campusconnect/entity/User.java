@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -29,4 +32,6 @@ public class User {
     private String password;
 
     private String phone;
+    @OneToMany(mappedBy = "driver")
+    private List<Ride> rides = new ArrayList<>();
 }

@@ -20,4 +20,8 @@ public class UserController {
     public UserResponse register(@Valid @RequestBody UserRequest request) {
         return userService.register(request);
     }
+    @GetMapping("/profile")
+    public String profile() {
+        return "Welcome User";
+    }
 }
