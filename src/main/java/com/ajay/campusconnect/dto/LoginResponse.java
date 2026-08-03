@@ -1,0 +1,16 @@
+package com.ajay.campusconnect.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class LoginResponse {
+
+    private Long id;
+    private String name;
+    private String email;
+
+    // JWT will be added later
+    private String message;
+}

@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<String> handleEmailException(
-            EmailAlreadyExistsException ex) {
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> handleInvalidCredentials(
+            InvalidCredentialsException ex) {
 
         return new ResponseEntity<>(
                 ex.getMessage(),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.UNAUTHORIZED
         );
     }
 
