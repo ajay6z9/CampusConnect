@@ -1,10 +1,10 @@
 package com.ajay.campusconnect.service;
-
 import com.ajay.campusconnect.dto.UserRequest;
+import com.ajay.campusconnect.dto.UserResponse;
 import com.ajay.campusconnect.entity.User;
+import com.ajay.campusconnect.exception.EmailAlreadyExistsException;
 import com.ajay.campusconnect.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
 @Service
 public class UserService {
 
@@ -14,10 +14,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User register(UserRequest request) {
+    public UserResponse register(UserRequest request) {
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
         User user = User.builder()
@@ -27,6 +27,13 @@ public class UserService {
                 .phone(request.getPhone())
                 .build();
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return UserResponse.builder()
+                .id(savedUser.getId())
+                .name(savedUser.getName())
+                .email(savedUser.getEmail())
+                .phone(savedUser.getPhone())
+                .build();
     }
 }

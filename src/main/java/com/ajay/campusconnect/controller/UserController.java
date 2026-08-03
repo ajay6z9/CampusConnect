@@ -1,7 +1,7 @@
 package com.ajay.campusconnect.controller;
 
 import com.ajay.campusconnect.dto.UserRequest;
-import com.ajay.campusconnect.entity.User;
+import com.ajay.campusconnect.dto.UserResponse;
 import com.ajay.campusconnect.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@Valid @RequestBody UserRequest request) {
+    public UserResponse register(@Valid @RequestBody UserRequest request) {
         return userService.register(request);
     }
 }
