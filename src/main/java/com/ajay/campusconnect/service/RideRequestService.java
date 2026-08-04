@@ -12,6 +12,8 @@ import com.ajay.campusconnect.repository.UserRepository;
 import com.ajay.campusconnect.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RideRequestService {
 
@@ -33,7 +35,7 @@ public class RideRequestService {
     }
 
     public RideRequestResponse requestRide(RideRequestDto dto) {
-        System.out.println(">>> RideRequestService reached");
+
         Ride ride = rideRepository.findById(dto.getRideId())
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
 
@@ -57,6 +59,82 @@ public class RideRequestService {
                 .source(ride.getSource())
                 .destination(ride.getDestination())
                 .status(savedRequest.getStatus().name())
+                .build();
+    }
+
+    public List<RideRequestResponse> getMyRequests() {
+
+        String email = securityUtils.getCurrentUserEmail();
+
+        User passenger = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return rideRequestRepository.findByPassenger(passenger)
+                .stream()
+                .map(request -> RideRequestResponse.builder()
+                        .requestId(request.getId())
+                        .passengerName(request.getPassenger().getName())
+                        .driverName(request.getRide().getDriver().getName())
+                        .source(request.getRide().getSource())
+                        .destination(request.getRide().getDestination())
+                        .status(request.getStatus().name())
+                        .build())
+                .toList();
+    }
+
+    public List<RideRequestResponse> getReceivedRequests() {
+
+        String email = securityUtils.getCurrentUserEmail();
+
+        User driver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return rideRequestRepository.findByRide_Driver(driver)
+                .stream()
+                .map(request -> RideRequestResponse.builder()
+                        .requestId(request.getId())
+                        .passengerName(request.getPassenger().getName())
+                        .driverName(driver.getName())
+                        .source(request.getRide().getSource())
+                        .destination(request.getRide().getDestination())
+                        .status(request.getStatus().name())
+                        .build())
+                .toList();
+    }
+    public RideRequestResponse acceptRequest(Long requestId) {
+
+        RideRequest request = rideRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        request.setStatus(RequestStatus.ACCEPTED);
+
+        RideRequest updated = rideRequestRepository.save(request);
+
+        return RideRequestResponse.builder()
+                .requestId(updated.getId())
+                .passengerName(updated.getPassenger().getName())
+                .driverName(updated.getRide().getDriver().getName())
+                .source(updated.getRide().getSource())
+                .destination(updated.getRide().getDestination())
+                .status(updated.getStatus().name())
+                .build();
+    }
+    public RideRequestResponse rejectRequest(Long requestId) {
+
+        RideRequest request = rideRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        request.setStatus(RequestStatus.REJECTED);
+
+        RideRequest updated = rideRequestRepository.save(request);
+
+        return RideRequestResponse.builder()
+                .requestId(updated.getId())
+                .passengerName(updated.getPassenger().getName())
+                .driverName(updated.getRide().getDriver().getName())
+                .source(updated.getRide().getSource())
+                .destination(updated.getRide().getDestination())
+                .status(updated.getStatus().name())
                 .build();
     }
 }

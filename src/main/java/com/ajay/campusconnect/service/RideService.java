@@ -138,4 +138,25 @@ public class RideService {
                         .build())
                 .toList();
     }
+    public List<RideResponse> getMyRides() {
+
+        String email = securityUtils.getCurrentUserEmail();
+
+        User driver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return rideRepository.findByDriver(driver)
+                .stream()
+                .map(ride -> RideResponse.builder()
+                        .id(ride.getId())
+                        .source(ride.getSource())
+                        .destination(ride.getDestination())
+                        .departureTime(ride.getDepartureTime())
+                        .availableSeats(ride.getAvailableSeats())
+                        .price(ride.getPrice())
+                        .description(ride.getDescription())
+                        .driverName(ride.getDriver().getName())
+                        .build())
+                .toList();
+    }
 }

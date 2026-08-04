@@ -53,4 +53,8 @@ public class RideController {
 
         return rideService.searchRides(source, destination);
     }
+    @GetMapping("/my")
+    public List<RideResponse> getMyRides() {
+        return rideService.getMyRides();
+    }
 }
