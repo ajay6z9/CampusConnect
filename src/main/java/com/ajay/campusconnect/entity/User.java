@@ -34,4 +34,7 @@ public class User {
     private String phone;
     @OneToMany(mappedBy = "driver")
     private List<Ride> rides = new ArrayList<>();
+
+    @OneToMany(mappedBy = "passenger")
+    private List<RideRequest> rideRequests = new ArrayList<>();
 }
