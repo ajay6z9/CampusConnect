@@ -121,4 +121,21 @@ public class RideService {
 
         rideRepository.delete(ride);
     }
+    public List<RideResponse> searchRides(String source, String destination) {
+
+        return rideRepository
+                .findBySourceIgnoreCaseAndDestinationIgnoreCase(source, destination)
+                .stream()
+                .map(ride -> RideResponse.builder()
+                        .id(ride.getId())
+                        .source(ride.getSource())
+                        .destination(ride.getDestination())
+                        .departureTime(ride.getDepartureTime())
+                        .availableSeats(ride.getAvailableSeats())
+                        .price(ride.getPrice())
+                        .description(ride.getDescription())
+                        .driverName(ride.getDriver().getName())
+                        .build())
+                .toList();
+    }
 }

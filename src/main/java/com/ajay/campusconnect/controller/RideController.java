@@ -44,4 +44,13 @@ public class RideController {
 
         return "Ride deleted successfully";
     }
+    @GetMapping("/search")
+    public List<RideResponse> searchRides(
+
+            @RequestParam String source,
+
+            @RequestParam String destination) {
+
+        return rideService.searchRides(source, destination);
+    }
 }
