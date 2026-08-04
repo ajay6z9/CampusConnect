@@ -6,6 +6,7 @@ import com.ajay.campusconnect.entity.Ride;
 import com.ajay.campusconnect.entity.User;
 import com.ajay.campusconnect.repository.RideRepository;
 import com.ajay.campusconnect.repository.UserRepository;
+import com.ajay.campusconnect.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
@@ -13,19 +14,23 @@ public class RideService {
 
     private final RideRepository rideRepository;
     private final UserRepository userRepository;
-
+    private final SecurityUtils securityUtils;
     public RideService(RideRepository rideRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       SecurityUtils securityUtils) {
+
         this.rideRepository = rideRepository;
         this.userRepository = userRepository;
+        this.securityUtils = securityUtils;
     }
 
     public RideResponse createRide(RideRequest request) {
 
         // Temporary
-        User driver = userRepository.findByEmail("vijay@gmail.com")
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+        String email = securityUtils.getCurrentUserEmail();
 
+        User driver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Ride ride = Ride.builder()
                 .source(request.getSource())
                 .destination(request.getDestination())
